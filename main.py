@@ -4,8 +4,6 @@ import pandas as pd
 from io import BytesIO
 import streamlit as st
 
-
-
 session = boto3.client('s3',
     aws_access_key_id = st.secrets["aws"]["aws_access_key_id"],
     aws_secret_access_key = st.secrets["aws"]["aws_secret_access_key"],
@@ -62,7 +60,7 @@ col1, col2 = st.columns([9, 1])
 with col1:
     fecha_seleccionada = st.date_input("Seleccione una fecha:", hoy)
 with col2:
-    st.write("#")
+    #st.write("#")
     st.button('🔄')
 
 data = get_data(fecha_seleccionada)

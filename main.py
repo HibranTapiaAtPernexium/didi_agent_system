@@ -7,8 +7,8 @@ import streamlit as st
 
 
 session = boto3.client('s3',
-    aws_access_key_id='AKIAQSOTMPTDXHFOQB4M',
-    aws_secret_access_key='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',
+    aws_access_key_id = st.secrets["aws"]["aws_access_key_id"],
+    aws_secret_access_key = st.secrets["aws"]["aws_secret_access_key"],
      region_name='us-east-2'
 )
 

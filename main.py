@@ -45,6 +45,7 @@ def get_data(fecha_buscar):
     data_general['progress'] = data_general.current_page.apply(lambda x: int(x.split("/")[0]) / int(x.split("/")[1]))
 
     data_general = data_general[['agent_number', 'last_update', 'last_status', 'current_page', 'progress', 'errors']]
+    data_general = data_general.sort_values(by = 'agent_number')
     return data_general
 
 st.set_page_config(

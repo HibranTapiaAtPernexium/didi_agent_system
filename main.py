@@ -1,8 +1,9 @@
 import boto3
-from datetime import datetime, date
+from datetime import datetime
 import pandas as pd
 from io import BytesIO
 import streamlit as st
+import pytz
 
 
 session = boto3.client('s3',
@@ -54,7 +55,10 @@ st.set_page_config(
 
 st.header("Interfaz de control para agentes automáticos")
 
-hoy = date.today()
+mexico_city_tz = pytz.timezone('America/Mexico_City')
+
+# Obtén la fecha y hora actual en la zona horaria de Ciudad de México
+hoy = datetime.now(mexico_city_tz).date()
 
 # Selector de fechas con la fecha de hoy como valor predeterminado
 col1, col2 = st.columns([9, 1])

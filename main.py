@@ -59,7 +59,7 @@ mexico_city_tz = pytz.timezone('America/Mexico_City')
 
 # Obtén la fecha y hora actual en la zona horaria de Ciudad de México
 hoy = datetime.now(mexico_city_tz).date()
-st.write(hoy)
+#st.write(hoy)
 
 # Selector de fechas con la fecha de hoy como valor predeterminado
 col1, col2 = st.columns([9, 1])

@@ -105,6 +105,8 @@ else:
 col1, col2  = st.columns(2)
 col1.metric(label = "Total de Cuentas gestionadas en el día", value = str(total_gestionado))
 
-col2.metric(label = "Promedio de cuentas por agente en jornada", value = f"{gestiones_en_ocho_horas:.0f}", delta = f'{gestiones_en_ocho_horas - 350:.0f}')
+col2.metric(label = "Promedio de cuentas por agente en jornada", value = f"{gestiones_en_ocho_horas:.0f}", delta = f'{gestiones_en_ocho_horas - 275:.0f}')
+
+col1.metric(label = "Productividad vs agente humano", value = f"{gestiones_en_ocho_horas/275:.1f}")
 
 

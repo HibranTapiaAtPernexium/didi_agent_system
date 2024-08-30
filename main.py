@@ -41,12 +41,14 @@ def get_data(fecha_buscar):
         print(f"No se encontraron archivos en el folder {key_folder} del bucket {bucket_name}.")
         return None
 
+    data_general_raw = data_general.copy()
+    data_general_raw["page"] = data_general_raw.current_page.apply(lambda x: int(x.split("/")[0]))
     data_general = data_general.sort_values(by = "last_update", ascending=False).drop_duplicates(subset = ["agent_number"], keep="first")
     data_general['progress'] = data_general.current_page.apply(lambda x: int(x.split("/")[0]) / int(x.split("/")[1]))
 
     data_general = data_general[['agent_number', 'last_update', 'last_status', 'current_page', 'progress', 'errors']]
     data_general = data_general.sort_values(by = 'agent_number')
-    return data_general
+    return data_general, data_general_raw
 
 st.set_page_config(
     page_title="Pernexium Agentes Automáticos",
@@ -69,7 +71,20 @@ with col2:
     #st.write("#")
     st.button('🔄')
 
-data = get_data(fecha_seleccionada)
+data, data_raw = get_data(fecha_seleccionada)
+
+data_raw.last_update = pd.to_datetime(data_raw.last_update)
+
+total_gestionado = 20 * (data_raw.groupby("agent_number").page.max() - data_raw.groupby("agent_number").page.min()).sum()
+
+agentes_corriendo = data_raw.agent_number.nunique()
+
+gestiones_medias = int(total_gestionado/agentes_corriendo)
+
+tiempo_medio_por_gestion = sum([data_raw.query(f"agent_number == {an}").last_update.diff().mean().total_seconds() / 20 for an in range(1, agentes_corriendo+1)])/ agentes_corriendo
+
+gestiones_en_ocho_horas = (9*60*60) / tiempo_medio_por_gestion
+
     
 if data is None:
     st.warning("No hay información para la fecha seleccionada")
@@ -86,5 +101,7 @@ else:
                 },
                 hide_index=True,)
 
+col1, col2  = st.columns(2)
+col1.metric(label = "Total de Cuentas gestionadas en el día", value = str(total_gestionado))
 
-#st.write("Contacto: enrique.ramirez@pernexium.com")
+col2.metric(label = "Promedio de cuentas por agente en jornada", value = f"{gestiones_en_ocho_horas:.0f}", delta = f'{gestiones_en_ocho_horas - 350:.0f}')

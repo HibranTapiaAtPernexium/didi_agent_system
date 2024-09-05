@@ -13,6 +13,39 @@ session = boto3.client('s3',
      region_name='us-east-2'
 )
 
+def remove_shutdown_instruction(agent_number):
+    # Primero obtenemos el archivo:
+    bucket_name = 's3-pernexium-report'
+    key_folder = 'raw/didi/didi_agent/'
+    fecha = datetime.now()
+    fecha_actual = fecha.strftime("%Y-%m-%d")
+    
+    key_final_prospectos = f'{key_folder}{fecha_actual}/shutdown_agent_{agent_number}.csv'
+    
+    file_content = "apagar"
+    
+    # Subir el archivo a S3
+    response = session.delete_object(Bucket=bucket_name, Key=key_final_prospectos)
+    
+    return f"El agente {agent_number} no se apagará"
+
+
+def send_shutdown_instruction(agent_number):
+    # Primero obtenemos el archivo:
+    bucket_name = 's3-pernexium-report'
+    key_folder = 'raw/didi/didi_agent/'
+    fecha = datetime.now()
+    fecha_actual = fecha.strftime("%Y-%m-%d")
+    
+    key_final_prospectos = f'{key_folder}{fecha_actual}/shutdown_agent_{agent_number}.csv'
+    
+    file_content = "apagar"
+    
+    # Subir el archivo a S3
+    response = session.put_object(Bucket=bucket_name, Key=key_final_prospectos, Body=file_content)
+    
+    return f"Apagado agente {agent_number}" if response['ResponseMetadata']['HTTPStatusCode'] == 200 else "No se mandó la instrucción"
+
 # Especifica el nombre del bucket y la clave del archivo .pkl en S3
 def get_data(fecha_buscar):
     data_general = pd.DataFrame()
@@ -108,4 +141,10 @@ else:
     
     col1.metric(label = "Productividad vs agente humano", value = f"{gestiones_en_ocho_horas/275:.1f}")
 
+    col1, col2  = st.columns(2)
+    
+    if col1.button("Apagar todos los bots"):
+        [st.write(send_shutdown_instruction(agent)) for agent in range(1, agentes_corriendo + 1)];
 
+    if col2.button("Reactivar todos los bots"):
+        [st.write(remove_shutdown_instruction(agent)) for agent in range(1, agentes_corriendo + 1)];

@@ -98,6 +98,9 @@ opcion = st.sidebar.selectbox(
     ("Agentes DiDi", "Gestiones BanCoppel")
 )
 if opcion == "Gestiones BanCoppel":
+
+    st.header("Gestiones por hora BanCoppel")
+    
     mexico_city_tz = pytz.timezone('America/Mexico_City')
     
     # Obtén la fecha y hora actual en la zona horaria de Ciudad de México

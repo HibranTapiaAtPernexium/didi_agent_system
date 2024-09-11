@@ -61,7 +61,7 @@ def get_data(fecha_buscar):
         # Itera sobre cada archivo en el folder
         for obj in response['Contents']:
             key = obj['Key']
-            print(f"Leyendo el archivo: {key}")
+            #print(f"Leyendo el archivo: {key}")
     
             # Obtén el objeto desde S3
             file_response = session.get_object(Bucket=bucket_name, Key=key)
@@ -107,12 +107,12 @@ if opcion == "Gestiones BanCoppel":
     # Selector de fechas con la fecha de hoy como valor predeterminado
     col1, col2 = st.columns([9, 1])
     with col1:
-        fecha_seleccionada = st.date_input("Seleccione una fecha:", hoy).strftime("%Y-%m-%d")
+        fecha_seleccionada_ = st.date_input("Seleccione una fecha:", hoy).strftime("%Y-%m-%d")
     with col2:
         #st.write("#")
         st.button('🔄')
 
-    mes = fecha_seleccionada[:-3].replace("-","_")
+    mes = fecha_seleccionada_[:-3].replace("-","_")
     
     bucket_name = 's3-pernexium-report'
     file_key = f'master/bancoppel/gestiones/{mes}/{mes}_gestiones.xlsx'  # Reemplaza con el nombre exacto del archivo
@@ -122,7 +122,7 @@ if opcion == "Gestiones BanCoppel":
         # Crear un buffer de memoria
         excel_buffer = BytesIO()
         
-        # Descargar el archivo en el buffer
+        # Descargar el archivo en el buƒffer
         session.download_fileobj(bucket_name, file_key, excel_buffer)
         
         # Mover el puntero al inicio del buffer
@@ -130,9 +130,9 @@ if opcion == "Gestiones BanCoppel":
         
         # Leer el archivo Excel en memoria con Pandas
         data_gestiones = pd.read_excel(excel_buffer, sheet_name=None)  # `sheet_name=None` para cargar todas las hojas en un dict
-        data_gestiones_por_hora = data_gestiones["Por hora"].query(f"fecha == '{fecha_seleccionada}'")
-        data_gestiones_por_dia = data_gestiones["Por dia"].query(f"fecha == '{fecha_seleccionada}'")
-        data_gestiones_resumen = data_gestiones["Resumen"].query(f"fecha == '{fecha_seleccionada}'")
+        data_gestiones_por_hora = data_gestiones["Por hora"].query(f"fecha == '{fecha_seleccionada_}'")
+        data_gestiones_por_dia = data_gestiones["Por dia"].query(f"fecha == '{fecha_seleccionada_}'")
+        data_gestiones_resumen = data_gestiones["Resumen"].query(f"fecha == '{fecha_seleccionada_}'")
         
     
     except Exception as e:
